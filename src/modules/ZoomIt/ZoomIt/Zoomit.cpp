@@ -4617,7 +4617,7 @@ LRESULT APIENTRY MainWndProc(
                             zoomLevel = static_cast<float>(1.0) * zoomTelescopeStep; 
                         else
                             zoomLevel = zoomTelescopeTarget;
-                        SetTimer( hWnd, 1, ZOOM_LEVEL_STEP_TIME, NULL );
+                        SetTimer( hWnd, 1, ZOOM_LEVEL_STEP_TIME_IN, NULL );
                     }
 
                 } else {
@@ -4632,7 +4632,7 @@ LRESULT APIENTRY MainWndProc(
                         // Start telescoping zoom. 
                         zoomTelescopeStep = ZOOM_LEVEL_STEP_OUT;
                         zoomTelescopeTarget = 1.0;
-                        SetTimer( hWnd, 2, ZOOM_LEVEL_STEP_TIME, NULL );
+                        SetTimer( hWnd, 2, ZOOM_LEVEL_STEP_TIME_OUT, NULL );
 
                     } else {
 
@@ -4767,7 +4767,7 @@ LRESULT APIENTRY MainWndProc(
                                 if( zoomLevel > zoomTelescopeTarget ) 
                                     zoomLevel = zoomTelescopeTarget;
                                 else
-                                    SetTimer( hWnd, 1, ZOOM_LEVEL_STEP_TIME, NULL );
+                                    SetTimer( hWnd, 1, ZOOM_LEVEL_STEP_TIME_IN, NULL );
                             }
 
                         } else if( zoomTelescopeTarget > ZOOM_LEVEL_MIN ) {
@@ -4797,7 +4797,7 @@ LRESULT APIENTRY MainWndProc(
                             }
                             else
                             {
-                                SetTimer( hWnd, 1, ZOOM_LEVEL_STEP_TIME, NULL );
+                                SetTimer( hWnd, 1, ZOOM_LEVEL_STEP_TIME_OUT, NULL );
                             }
                         }
                     }
@@ -7029,7 +7029,8 @@ LRESULT CALLBACK LiveZoomWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
             moveHeight = sourceRectHeight/LIVEZOOM_MOVE_REGIONS;
             curTickCount = GetTickCount();
             if( zoomLevel != zoomTelescopeTarget && 
-                (prevZoomStepTickCount == 0 || (curTickCount - prevZoomStepTickCount > ZOOM_LEVEL_STEP_TIME)) ) {
+                (prevZoomStepTickCount == 0 || (curTickCount - prevZoomStepTickCount >
+                    static_cast<DWORD>( zoomTelescopeStep < 1 ? ZOOM_LEVEL_STEP_TIME_OUT : ZOOM_LEVEL_STEP_TIME_IN ))) ) {
 
                 prevZoomStepTickCount = curTickCount;
                 if( (zoomTelescopeStep > 1 && zoomLevel*zoomTelescopeStep >= zoomTelescopeTarget ) ||

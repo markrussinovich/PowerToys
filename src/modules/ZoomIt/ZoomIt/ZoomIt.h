@@ -29,10 +29,18 @@ type_pEnableThemeDialogTexture    pEnableThemeDialogTexture;
 
 #define ZOOM_LEVEL_MIN		1
 #define ZOOM_LEVEL_INIT		2
+// Zoom-out uses the reciprocal of the zoom-in step so both directions trace the
+// same geometric path, just reversed. Keep these exact inverses -- a mismatched
+// pair makes the two animations visit different zoom levels and leaves a large
+// clamp-to-target jump on the final frame (visible as a bounce). If one
+// direction should feel faster, change the step *rate* constants below instead.
 #define ZOOM_LEVEL_STEP_IN	((float) 1.1)
-#define ZOOM_LEVEL_STEP_OUT	((float) 0.8)
+#define ZOOM_LEVEL_STEP_OUT	((float) (1.0 / 1.1))
 #define ZOOM_LEVEL_MAX		32
 #define ZOOM_LEVEL_STEP_TIME	20
+// How often a step is applied, in ms. Lower == faster animation, same path.
+#define ZOOM_LEVEL_STEP_TIME_IN		ZOOM_LEVEL_STEP_TIME
+#define ZOOM_LEVEL_STEP_TIME_OUT	10
 
 #define LIVEZOOM_MOVE_REGIONS	8
 
